@@ -2,11 +2,10 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"math/rand"
 
 	"github.com/google/uuid"
-	ampq "github.com/rabbitmq/amqp091-go"
+	amqp "github.com/rabbitmq/amqp091-go"
 )
 
 type Order struct {
@@ -14,16 +13,14 @@ type Order struct {
 	Price float64
 }
 
-func GenerateOrder() Order {
+func GenerateOrders() Order {
 	return Order{
-		ID: uuid.New().String(),
-		// random value between 0 and 100
+		ID:    uuid.New().String(),
 		Price: rand.Float64() * 100,
 	}
 }
 
-func Notify(ch *ampq.Channel, order Order) error {
-
+func Notify(ch *amqp.Channel, order Order) error {
 	body, err := json.Marshal(order)
 
 	if err != nil {
@@ -31,11 +28,11 @@ func Notify(ch *ampq.Channel, order Order) error {
 	}
 
 	err = ch.Publish(
-		"amq.direct",
+		"amq.direct", // exchange,
 		"",
 		false,
 		false,
-		ampq.Publishing{
+		amqp.Publishing{
 			ContentType: "application/json",
 			Body:        body,
 		},
@@ -45,7 +42,7 @@ func Notify(ch *ampq.Channel, order Order) error {
 }
 
 func main() {
-	conn, err := ampq.Dial("amqp://guest:guest@rabbitmq:5672/")
+	conn, err := amqp.Dial("amqp://guest:guest@rabbitmq:5672/")
 
 	if err != nil {
 		panic(err)
@@ -61,14 +58,15 @@ func main() {
 
 	defer ch.Close()
 
-	for i := 0; i < 100; i++ {
-		order := GenerateOrder()
-		err = Notify(ch, order)
+	for i := 0; i < 100000000; i++ {
+		order := GenerateOrders()
+
+		err := Notify(ch, order)
 
 		if err != nil {
 			panic(err)
 		}
 
-		fmt.Println("Order sent: ", order)
+		// fmt.Println(order)
 	}
 }

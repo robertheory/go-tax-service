@@ -23,7 +23,8 @@ func NewCalculateFinalPriceUseCase(orderRepository entity.OrderRepositoryInterfa
 	return &CalculateFinalPriceUseCase{OrderRepository: orderRepository}
 }
 
-func (uc *CalculateFinalPriceUseCase) Execute(input OrderInputDTO) (*OrderOutputDTO, error) {
+func (c *CalculateFinalPriceUseCase) Execute(input OrderInputDTO) (*OrderOutputDTO, error) {
+
 	order, err := entity.NewOrder(input.ID, input.Price, input.Tax)
 
 	if err != nil {
@@ -36,7 +37,7 @@ func (uc *CalculateFinalPriceUseCase) Execute(input OrderInputDTO) (*OrderOutput
 		return nil, err
 	}
 
-	err = uc.OrderRepository.Save(order)
+	err = c.OrderRepository.Save(order)
 
 	if err != nil {
 		return nil, err

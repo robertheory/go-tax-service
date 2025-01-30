@@ -3,6 +3,8 @@ package database
 import (
 	"database/sql"
 	"tax-service/internal/order/entity"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 type OrderRepository struct {
@@ -19,12 +21,11 @@ func NewOrderRepository(db *sql.DB) *OrderRepository {
 //   `price` float NOT NULL,
 //   `tax` float NOT NULL,
 //   `final_price` float NOT NULL,
-//   PRIMARY KEY (`id`)
-// );
+//   PRIMARY KEY (`id`))
+// )
 
-func (repo *OrderRepository) Save(order *entity.Order) error {
-
-	stmt, err := repo.Db.Prepare("INSERT INTO orders (id, price, tax, final_price) VALUES (?, ?, ?, ?)")
+func (r *OrderRepository) Save(order *entity.Order) error {
+	stmt, err := r.Db.Prepare("INSERT INTO orders (id, price, tax, final_price) VALUES (?, ?, ?, ?)")
 
 	if err != nil {
 		return err
