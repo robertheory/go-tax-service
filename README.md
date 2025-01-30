@@ -6,6 +6,28 @@ This service is responsible for calculating the tax for a given products.
 
 This service is a concept project to demonstrate how Go can handle a high number of requests and tasks in parallel with low resource consumption.
 
+## Concepts and Technologies
+
+1. **Go**: The service is written in Go, a statically typed, compiled language that is designed for simplicity and efficiency.
+
+   1. **Goroutines**: The service uses goroutines to handle the requests concurrently and efficiently.
+
+   2. **Channels**: The service uses channels to communicate between the goroutines and to handle the concurrency.
+
+   3. **WaitGroup**: The service uses the WaitGroup to wait for all the goroutines to finish before returning the response.
+
+   4. **Testing**: The service uses the testing package to write unit tests for the service.
+
+2. **RabbitMQ**: The service uses RabbitMQ as a message broker to handle the communication between the services.
+
+3. **Prometheus**: The service uses Prometheus to collect and store the metrics from the service.
+
+4. **Grafana**: The service uses Grafana to visualize the metrics collected by Prometheus.
+
+5. **Docker**: The service is containerized with Docker to ensure that the service runs in the same environment as the production environment.
+
+6. **Docker Compose**: The service uses Docker Compose to manage the services and dependencies in the development environment.
+
 ## Setup
 
 1. Install [Docker](https://docs.docker.com/get-docker/)
