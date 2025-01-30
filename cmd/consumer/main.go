@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"sync"
 	"tax-service/internal/order/infra/database"
 	"tax-service/internal/order/usecase"
@@ -28,6 +29,18 @@ func main() {
 	repository := database.NewOrderRepository(db)
 
 	uc := usecase.NewCalculateFinalPriceUseCase(repository)
+
+	http.HandleFunc("/total", func(w http.ResponseWriter, r *http.Request) {
+		uc := usecase.NewGetTotalUseCase(repository)
+		output, err := uc.Execute()
+		if err != nil {
+			// Internal Server Error
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		json.NewEncoder(w).Encode(output)
+	})
+	go http.ListenAndServe(":8181", nil)
 
 	ch, err := rabbitmq.OpenChannel()
 
