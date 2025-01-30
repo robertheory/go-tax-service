@@ -32,6 +32,10 @@ services:
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
       - RABBITMQ_DEFAULT_VHOST=/
+    depends_on:
+      - goapp
+    volumes:
+      - ./.docker/rabbitmq:/var/lib/rabbitmq
 
   prometheus:
     image: prom/prometheus
@@ -41,6 +45,8 @@ services:
       - '9090:9090'
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    depends_on:
+      - rabbitmq
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
@@ -53,3 +59,7 @@ services:
     hostname: grafana
     ports:
       - '3000:3000'
+    depends_on:
+      - prometheus
+    volumes:
+      - ./.docker/grafana:/var/lib/grafana
