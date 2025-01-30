@@ -2,41 +2,35 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
-	"tax-service/internal/order/entity"
 	"tax-service/internal/order/infra/database"
+	"tax-service/internal/order/usecase"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
 func main() {
-
-	order, err := entity.NewOrder("2", 20, 2)
-
-	if err != nil {
-		panic(err)
-	}
-
-	err = order.CalculateFinalPrice()
-
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("The final price is: %f", order.FinalPrice)
-
 	db, err := sql.Open("mysql", "root:root@tcp(mysql:3306)/orders")
 
 	if err != nil {
 		panic(err)
 	}
 
-	repository := database.NewOrderRepository(db)
+	defer db.Close()
 
-	err = repository.Save(order)
+	repository := database.NewOrderRepository(db)
+	uc := usecase.NewCalculateFinalPriceUseCase(repository)
+
+	input := usecase.OrderInputDTO{
+		ID:    "1234",
+		Price: 100,
+		Tax:   10,
+	}
+
+	output, err := uc.Execute(input)
 
 	if err != nil {
 		panic(err)
 	}
 
+	println(output.FinalPrice)
 }
