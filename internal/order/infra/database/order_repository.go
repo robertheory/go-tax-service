@@ -13,15 +13,24 @@ func NewOrderRepository(db *sql.DB) *OrderRepository {
 	return &OrderRepository{Db: db}
 }
 
+// sql create table on mysql
+// CREATE TABLE `orders` (
+//   `id` varchar(255) NOT NULL,
+//   `price` float NOT NULL,
+//   `tax` float NOT NULL,
+//   `final_price` float NOT NULL,
+//   PRIMARY KEY (`id`)
+// );
+
 func (repo *OrderRepository) Save(order *entity.Order) error {
 
-	_, err := repo.Db.Prepare("INSERT INTO orders (id, price, tax) VALUES (?, ?, ?)")
+	stmt, err := repo.Db.Prepare("INSERT INTO orders (id, price, tax, final_price) VALUES (?, ?, ?, ?)")
 
 	if err != nil {
 		return err
 	}
 
-	_, err = repo.Db.Exec(order.ID, order.Price, order.Tax)
+	_, err = stmt.Exec(order.ID, order.Price, order.Tax, order.FinalPrice)
 
 	if err != nil {
 		return err
