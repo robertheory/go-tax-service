@@ -2,6 +2,10 @@ package entity
 
 import "errors"
 
+type OrderRepositoryInterface interface {
+	Save(order *Order) error
+}
+
 type Order struct {
 	ID         string
 	Price      float64

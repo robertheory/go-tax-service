@@ -1,7 +1,7 @@
 package entity_test
 
 import (
-	"tax-service/internal/entity"
+	"tax-service/internal/order/entity"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
