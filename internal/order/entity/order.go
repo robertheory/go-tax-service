@@ -4,6 +4,7 @@ import "errors"
 
 type OrderRepositoryInterface interface {
 	Save(order *Order) error
+	GetTotal() (float64, error)
 }
 
 type Order struct {

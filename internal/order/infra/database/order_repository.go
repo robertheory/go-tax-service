@@ -39,3 +39,15 @@ func (r *OrderRepository) Save(order *entity.Order) error {
 
 	return nil
 }
+
+func (r *OrderRepository) GetTotal() (float64, error) {
+	var total float64
+
+	err := r.Db.QueryRow("SELECT SUM(final_price) FROM orders").Scan(&total)
+
+	if err != nil {
+		return 0.0, err
+	}
+
+	return total, nil
+}
